@@ -85,20 +85,21 @@ public class PoligonosApp extends Application {
         final var root = new Pane();
         final var scene = new Scene(root, 800, 600);
 
-        for (final var listaPontos : pontosPoligonos) {
-            final var poligono = new Polygon();
-            for (final Point point : listaPontos) {
-                poligono.getPoints().addAll(point.x(), point.y());
-            }
+        pontosPoligonos.stream()
+                .map(listaPontos -> {
+                    Polygon poligono = new Polygon();
+                    listaPontos.forEach(p -> poligono.getPoints().addAll(p.x(), p.y()));
+                    poligono.setFill(Color.BLUE);
+                    poligono.setStroke(Color.BLACK);
+                    return poligono;
+                })
+                .forEach(root.getChildren()::add);
 
-            poligono.setFill(Color.BLUE);
-            poligono.setStroke(Color.BLACK);
-            root.getChildren().add(poligono);
-        }
+        final var label1 = newLabel("Perímetro dos Polígonos: " +
+                perimetros().stream().map(p -> String.format("%.1f", p)).toList(), 500);
 
-        final List<String> perimetros = perimetros().stream().map(p -> String.format("%.1f", p)).toList();
-        final var label1 = newLabel("Perímetro dos Polígonos: " + perimetros, 500);
         final var label2 = newLabel("Tipo dos Polígonos: " + tipoPoligonos(), 530);
+
         root.getChildren().addAll(label1, label2);
 
         mainStage.setTitle("Polígonos");
